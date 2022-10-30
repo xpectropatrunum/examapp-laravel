@@ -16,9 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('user', [LoginController::class, "user"]);
+Route::get('logout', [LoginController::class, "logout"]);
 
 Route::prefix('login')->group(function () {
     Route::get('check', [LoginController::class, "check"]);
+    Route::post('/', [LoginController::class, "attempt"]);
 });
 Route::prefix('register')->group(function () {
     Route::post('verify-code', [LoginController::class, "verify"]);

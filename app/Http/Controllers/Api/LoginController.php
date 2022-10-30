@@ -25,11 +25,31 @@ class LoginController extends Controller
         if ($user) {
             return Response::json(["success" => 1, "action" => 0, "phone" => $request->phone]);
         }
-        if ($this->initRegisteration($request->phone)) {
-            return Response::json(["success" => 1, "action" => 1, "phone" => $request->phone]);
-        }
-        return Response::json(["success" => 0, "msg" => "خطایی رخ داده لطفا بعدا تلاش کنید"]);
+        // if ($this->initRegisteration($request->phone)) {
+        //     return Response::json(["success" => 1, "action" => 1, "phone" => $request->phone]);
+        // }
+        return Response::json(["success" => 0, "msg" => "این شماره در سیستم موجود نیست"]);
     }
+    public function attempt(Request $request)
+    {
+        $rules = [
+            "phone" => "required|digits:11",
+            "password" => "required",
+        ];
+        $messages = [
+            "phone.required" => "شماره موبایل را وارد نمایید",
+            "phone.digits" => "شماره موبایل را صحیح وارد کنید",
+        ];
+        $request->validate($rules, $messages);
+        if (!$token = auth()->attempt($request->all())) {
+        return Response::json(["success" => 0, "msg" => "اطلاعات کاربری نادرست است"], 401);
+
+        }
+        return Response::json(["success" => 1, "token" => $token,]);
+
+    }
+
+    
     public function initRegisteration($phone)
     {
         $code = rand(999, 9999);
@@ -56,8 +76,8 @@ class LoginController extends Controller
     {
         $rules = [
             "phone" => "required|digits:11",
-            "password" => "required|digits:6",
-            "confirm_password" => "required|digits:6|same:password",
+            "password" => "required|min:6",
+            "confirm_password" => "required|min:6|same:password",
         ];
         $request->validate($rules);
         $phone = $request->phone;
@@ -69,7 +89,7 @@ class LoginController extends Controller
 
         if ($user->update(["name" => $request->name, "password" => Hash::make($request->password), "is_active" => 1])) {
             $token = auth()->guard("api")->login($user);
-            return Response::json(["success" => 1, "token" =>  $token, "user" => $user, "msg" => "تبریک! ثبت نام شما با موفقیت انجام شد."]);
+            return Response::json(["success" => 1, "token" =>  $token, "msg" => "تبریک! ثبت نام شما با موفقیت انجام شد."]);
         }
         return Response::json(["success" => 0, "msg" => "خطایی رخ داد"]);
     }
@@ -102,7 +122,15 @@ class LoginController extends Controller
         if(auth()->user()){
             return auth()->user();
         }
-        return ["success" => 0, "msg" => "not found"];
+        return response()->json(["success" => 0, "msg" => "not found"]);
+    }
+    public function logout()
+    {
+        if(auth()->logout()){
+            return ["success" => 1];
+
+        }
+        return ["success" => 0];
     }
 
 

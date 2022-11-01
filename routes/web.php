@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\ExamController as ApiExamController;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -22,8 +23,10 @@ Route::get('/4', function () {
     //return  phpinfo(); 
     //Admin::create(["name" =>  "amir", "username" => "amir", "password" => Hash::make("123"),]);
 });
+
 Route::prefix("admin")->name("admin.")->group(function () {
-    Route::get('login', [LoginController::class, 'index'])->name("login");
+Route::get('login', [LoginController::class, 'index'])->name("login");
+
     Route::get('logout', [LoginController::class, 'logout'])->name("logout");
     Route::post('login/attemp', [LoginController::class, 'loginAttemp'])->name("login.attemp");
     Route::middleware('auth:admin')->group(function () {
@@ -38,3 +41,5 @@ Route::prefix("admin")->name("admin.")->group(function () {
 
     });
 });
+
+Route::get('/pdf/{hash}',[ApiExamController::class, "pdf"])->name("pdf");

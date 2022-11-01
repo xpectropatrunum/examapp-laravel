@@ -13,7 +13,8 @@ use App\Models\TvTemp;
 use App\Models\Language;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class ExamController extends Controller
 {
@@ -36,14 +37,15 @@ class ExamController extends Controller
 
 
         $extension = "pdf";
-        $filenametostore = $exam->id . '.' . $extension;
+        $filenametostore = md5($exam->id . "drsho1") . '.' . $extension;
         $uploadedFile = $request->file('file');
         $uploadedFile->move(public_path("exams/"), $filenametostore);
+        $link = route("pdf", md5($exam->id . "drsho1"));
         if (
-            $exam->file()->create(["url" => env("APP_URL") . "/exams/" . $filenametostore]) &&
+            $exam->file()->create(["url" =>  $link]) &&
             $exam->key()->create(["keys" => $request->keys])
         ) {
-            return redirect()->back()->withSuccess("Questins uploaded successfully");
+            return redirect()->back()->withSuccess("Questions uploaded successfully");
         }
         return redirect()->back()->withError("Something went wrong");
     }
@@ -99,6 +101,14 @@ class ExamController extends Controller
         $insert = Exam::create($request->all());
 
         if ($insert) {
+
+
+            $extension = $request->file("file")->getClientOriginalExtension();
+            $filenametostore = md5($insert->id) . '.' . $extension;
+            $img = Image::make($request->file("file"));
+            $img->backup();
+            $img->orientate()->encode($extension);
+            File::put("exams/" . $filenametostore, (string) $img);
 
             foreach ($request->users ?? [] as $user) {
                 $insert->users()->create(["user_id" => $user]);
@@ -158,6 +168,12 @@ class ExamController extends Controller
 
 
         if ($exam->update($request->all())) {
+            $extension = $request->file("file")->getClientOriginalExtension();
+            $filenametostore = md5($exam->id) . '.' . $extension;
+            $img = Image::make($request->file("file"));
+            $img->backup();
+            $img->orientate()->encode($extension);
+            File::put("exams/" . $filenametostore, (string) $img);
             $exam->users()->delete();
             foreach ($request->users ?? [] as $user) {
                 $exam->users()->create(["user_id" => $user]);

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('user', [LoginController::class, "user"]);
+Route::get('refresh', [LoginController::class, "refresh"]);
 Route::get('logout', [LoginController::class, "logout"]);
 
 Route::prefix('login')->group(function () {
@@ -35,5 +36,8 @@ Route::prefix('users')->group(function () {
 });
 Route::prefix('exams')->group(function () {
     Route::get("get", [ExamController::class, "index"]);
+    Route::get("init/{exam}", [ExamController::class, "init"]);
+    Route::get("get/{exam}", [ExamController::class, "get"]);
+    Route::post("{exam}/submit-answer", [ExamController::class, "submitAnswer"]);
     //Route::post("change-image", [UserController::class, "changeImage"]);
 });

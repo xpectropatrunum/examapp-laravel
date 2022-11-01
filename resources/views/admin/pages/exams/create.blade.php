@@ -43,9 +43,17 @@
                                  aria-labelledby="custom-tabs-basic-tab">
                                  <div class="row">
                                     <div class="form-group col-lg-5">
+                                        <label>image</label>
+                                        <input type="file" value="{{ old('image') }}" name="file"
+                                            class="d-block @error('image') is-invalid @enderror" required>
+            
+                                    </div>
+
+
+                                    <div class="form-group col-lg-5">
                                         <label>title</label>
                                         <input type="text" value="{{ old('title') }}" name="title"
-                                            class="form-control @error('title') is-invalid @enderror" placeholder="آزمون فلان" required>
+                                            class="form-control @error('title') is-invalid @enderror" placeholder="مثلا: جمع بندی" required>
                                     </div>
 
                                         

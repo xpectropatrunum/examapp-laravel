@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExamResource;
+use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\File as RulesFile;
 use Intervention\Image\Facades\Image;
@@ -18,7 +21,82 @@ class ExamController extends Controller
      */
     public function index()
     {
-        return auth()->user()?->exams()->where("is_active", 1)->get() ?? [];
+        $exams = auth()->user()?->exams()->where("is_active", 1)->whereHas('sessions', function ($query) {
+            return $query->where('user_id', auth()->user()->id) && $query->where('completed', "=", 0);
+        })->get() ?? [];
+        if (count($exams) == 0) {
+            $exams = auth()->user()?->exams()->where("is_active", 1)->get() ?? [];
+        }
+
+        return ["success" => 1, "data" =>  ExamResource::collection($exams)];
+    }
+    public function submitAnswer(Exam $exam, Request $request)
+    {
+        $examSession = $exam->sessions()->where("completed", "!=", 1)->where(["user_id" => auth()->user()->id])->first();
+
+
+        if ($examSession) {
+            $m = false;
+
+            if (!$request->a) {
+                $m = $examSession->answers()->where("q", $request->q)->delete();
+            } else {
+                $m = $examSession->answers()->updateOrCreate(["q" => $request->q, "exam_session_id" => $examSession->id], ["q" => $request->q, "a" => $request->a]);
+            }
+            if ($m) {
+                return ["success" => 1];
+            }
+        }
+        return ["success" => 0];
+    }
+
+
+    public function pdf($hash)
+    {
+        $file = public_path() . DIRECTORY_SEPARATOR . 'exams' . DIRECTORY_SEPARATOR . "$hash.pdf";
+
+        $response = Response::make($file, 200);
+        return Response::make(file_get_contents($file), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $hash . '"'
+        ]);
+    }
+    public function init($exam)
+    {
+        $exam = auth()->user()?->exams()->where(["exams.id" => $exam, "is_active" => 1])->first();
+        if (!$exam) {
+            return ["success" => 0, "msg" => "آزمون یافت نشد"];
+        }
+        if ($exam->sessions()->where(["user_id" => auth()->user()->id, "completed" => 1])->first()) {
+            return ["success" => 0, "msg" => "شما قبلا در این آزمون شرکت کرده اید"];
+        }
+        if (!$exam->file || count($exam->key->keys) == 0) {
+            return ["success" => 1, "ready" => 0, "msg" => "آزمون آماده نیست لطفا به مشاور خود اطلاع دهید"];
+        }
+
+        if ($exam->sessions()->where(["user_id" => auth()->user()->id, "completed" => 0])->first()) {
+            //resume exam
+        } else {
+            //init
+            if ($exam->sessions()->create(["user_id" => auth()->user()->id, "started_at" => time(), "ends_in" => time() + 60 * $exam->q_time, "q_time" => $exam->q_time])) {
+                return ["success" => 1, "ready" => 1, "data" =>  ExamResource::make($exam)];
+            }
+        }
+    }
+    public function get($exam)
+    {
+        $exam = auth()->user()?->exams()->where(["exams.id" => $exam, "is_active" => 1])->first();
+        if (!$exam) {
+            return ["success" => 0, "msg" => "آزمون یافت نشد"];
+        }
+        if ($exam->sessions()->where(["user_id" => auth()->user()->id, "completed" => 1])->first()) {
+            return ["success" => 0, "msg" => "شما قبلا در این آزمون شرکت کرده اید"];
+        }
+        if (!$exam->file || count($exam->key->keys) == 0) {
+            return ["success" => 1, "ready" => 0, "msg" => "آزمون آماده نیست لطفا به مشاور خود اطلاع دهید"];
+        }
+
+        return ["success" => 1, "ready" => 1, "data" =>  ExamResource::make($exam)];
     }
 
     /**

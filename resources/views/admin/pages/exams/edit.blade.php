@@ -50,10 +50,21 @@
                                 @method('PUT')
                                 <div class="row">
                                     <div class="form-group col-lg-5">
+                                        <label>image</label>
+                                        <input type="file" value="{{ old('file') }}" name="file"
+                                            class="d-block @error('file') is-invalid @enderror" required>
+                                       
+                                  
+                                            <img src="{{$exam->image}}" width="150">
+                                                
+                                      
+                                    </div>
+
+                                    <div class="form-group col-lg-5">
                                         <label>title</label>
                                         <input type="text" value="{{ old('title', $exam->title) }}" name="title"
                                             class="form-control @error('title') is-invalid @enderror"
-                                            placeholder="آزمون فلان" required>
+                                            placeholder="مثلا: جمع بندی" required>
                                     </div>
 
 

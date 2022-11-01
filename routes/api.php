@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\ExamController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,4 +28,12 @@ Route::prefix('register')->group(function () {
     Route::post('verify-code', [LoginController::class, "verify"]);
     Route::post('resend-code', [LoginController::class, "resendCode"]);
     Route::post('finish', [LoginController::class, "finish"]);
+});
+Route::prefix('users')->group(function () {
+    Route::post("update", [UserController::class, "update"]);
+    Route::post("change-image", [UserController::class, "changeImage"]);
+});
+Route::prefix('exams')->group(function () {
+    Route::get("get", [ExamController::class, "index"]);
+    //Route::post("change-image", [UserController::class, "changeImage"]);
 });

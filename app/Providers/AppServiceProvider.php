@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('farsi', function ($attribute, $value, $parameters, $validator) {
+            return preg_match('/^[\x{0600}-\x{06FF}\x{FB8A}\x{067E}\x{0686}\x{06AF}\x{200C}\x{200F} ]+$/u', $value);
+        });
+        Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
+            return strlen($value) == 11 && strpos($value, "09") === 0;
+        });
     }
 }

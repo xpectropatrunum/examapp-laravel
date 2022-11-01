@@ -32,6 +32,10 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    function exams(){
+        return $this->belongsToMany(Exam::class, ExamUser::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -40,11 +44,15 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'phone',
+        'sex',
         'code',
         'code_expiry',
         'is_active',
         'password',
     ];
+    public function image(){
+        return $this->hasOne(UserImage::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

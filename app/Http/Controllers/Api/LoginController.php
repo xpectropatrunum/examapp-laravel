@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\Sms;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -40,6 +41,7 @@ class LoginController extends Controller
             "phone.required" => "شماره موبایل را وارد نمایید",
             "phone.digits" => "شماره موبایل را صحیح وارد کنید",
         ];
+
         $request->validate($rules, $messages);
         if (!$token = auth()->attempt($request->all())) {
         return Response::json(["success" => 0, "msg" => "اطلاعات کاربری نادرست است"], 401);
@@ -120,7 +122,7 @@ class LoginController extends Controller
     public function user()
     {
         if(auth()->user()){
-            return auth()->user();
+            return collect(UserResource::make(auth()->user()))->toArray();
         }
         return response()->json(["success" => 0, "msg" => "not found"]);
     }

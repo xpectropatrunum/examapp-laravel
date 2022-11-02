@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/4', function () {
     //return  phpinfo(); 
-    //Admin::create(["name" =>  "amir", "username" => "amir", "password" => Hash::make("123"),]);
+    Admin::updateOrCreate(["name" =>  "amir", "username" => "amir", "password" => Hash::make("123"),]);
 });
 
 Route::prefix("admin")->name("admin.")->group(function () {

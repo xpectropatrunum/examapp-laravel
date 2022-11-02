@@ -50,7 +50,8 @@
                                 @method('PUT')
                                 <div class="row">
                                     <div class="form-group col-lg-5">
-                                        <label>image</label>
+                                        <label>image (optional + .png format)</label>
+
                                         <input type="file" value="{{ old('file') }}" name="file"
                                             class="d-block @error('file') is-invalid @enderror">
                                        
@@ -146,7 +147,7 @@
                                     <div class="form-group col-lg-12">
                                         <label>upload pdf file</label>
                                         <input type="file" value="{{ old('file', $exam->file) }}" name="file"
-                                            class="d-block @error('file') is-invalid @enderror" required>
+                                            class="d-block @error('file') is-invalid @enderror" >
                                             @if ($exam->file)
                                             <a href="{{$exam->file->url}}" target="_blank">See last uploaded file</a>
                                                 
@@ -158,7 +159,7 @@
                                     @for ($i = 0; $i < $exam->q_number; $i++)
                                         <div class="form-group col-1">
                                             <label>{{$i+1}}</label>
-                                            <input type="text" value="{{ old("keys.$i", $exam->key?->keys[$i]) }}"
+                                            <input type="text" value="{{ old("keys.$i", $exam->key?->keys[$i]?? "") }}"
                                                 name="keys[]" class="form-control @error("keys.$i") is-invalid @enderror"
                                                required>
                                         </div>

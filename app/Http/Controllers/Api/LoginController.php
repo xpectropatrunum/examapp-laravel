@@ -117,7 +117,10 @@ class LoginController extends Controller
     }
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        if(auth()->user()){
+            return collect(UserResource::make(auth()->user()))->toArray();
+        }
+        return response()->json(["success" => 0, "msg" => "not found"]);
     }
     public function user()
     {

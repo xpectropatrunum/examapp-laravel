@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExamReport;
 use App\Http\Resources\ExamResource;
 use App\Models\Exam;
+use App\Models\ExamSession;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
@@ -30,15 +33,31 @@ class ExamController extends Controller
 
         return ["success" => 1, "data" =>  ExamResource::collection($exams)];
     }
+    public function sessionAssessment(){
+        ExamSession::get()->each(function($item){
+            if($item->completed == 1){
+                Report::updateOrCreate(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
+            }
+        });
+        
+    }
+    
     public function examReports(){
+        ///**important */
+        $this->sessionAssessment();
+        ////***** */
         $reports = auth()->user()->reports;
         if($reports){
-            return ["success" => 1, "data" => $reports];
+            return ["success" => 1, "data" => ExamReport::collection($reports)];
         }
         return ["success" => 0, "msg" => "موردی وجود ندارد"];
-
-
-
+    }
+    public function getReport(Report $report){
+        
+        if($report){
+            return ["success" => 1, "data" => ExamReport::make($report)];
+        }
+        return ["success" => 0, "msg" => "موردی وجود ندارد"];
     }
     public function finishExam(Exam $exam)
     {
@@ -46,6 +65,7 @@ class ExamController extends Controller
         $examSession = $exam->sessions()->where("completed", "!=", 1)->where(["user_id" => auth()->user()->id])->first();
         if ($examSession) {
             if ($examSession->update(["completed" => 1])) {
+                Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
                 return ["success" => 1];
             }
         }

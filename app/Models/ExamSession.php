@@ -27,12 +27,15 @@ class ExamSession extends Model
     function answers(){
         return $this->hasMany(ExamSessionAnswer::class, "exam_session_id", "id");
     }
+    function report(){
+        return $this->hasOne(Report::class);
+    }
     function getCompletedAttribute(){
         $attr = $this->attributes;
         if($attr["completed"] == 1){
             return 1;
         }
-        return (time() - $attr["ends_in"] > $attr["q_time"]) ? 1 : 0;
+        return (time() > $attr["ends_in"]) ? 1 : 0;
     }
 
 }

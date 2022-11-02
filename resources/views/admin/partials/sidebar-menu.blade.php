@@ -76,14 +76,49 @@
 
                 </ul>
             </li>
-         
-        
-         
-          
 
-       
+            <li class="nav-item has-treeview {{ request()->routeIs(['admin.settings.*']) ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-cog"></i>
+                    <p>
+                        Settings
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul
+                    class="nav nav-treeview {{ request()->routeIs(['admin.settings.*']) ? 'd-block' : 'display-none' }}">
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.settings.index') }}"
+                            class="nav-link {{ request()->routeIs(['admin.settings.index']) ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>General </p>
+                        </a>
+                    </li>
+
+
+
+
+                </ul>
+            </li>
+
+
+
+
+
+
+
+
+
+
 
         </ul>
+
+
+
+
+
+
     </nav>
     <!-- /.sidebar-menu -->
 </div>

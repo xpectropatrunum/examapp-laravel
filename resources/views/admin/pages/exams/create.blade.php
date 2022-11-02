@@ -43,7 +43,7 @@
                                  aria-labelledby="custom-tabs-basic-tab">
                                  <div class="row">
                                     <div class="form-group col-lg-5">
-                                        <label>image</label>
+                                        <label>image (optional + .png format)</label>
                                         <input type="file" value="{{ old('image') }}" name="file"
                                             class="d-block @error('image') is-invalid @enderror">
             

@@ -26,7 +26,6 @@ class ExamController extends Controller
     function saveQuestion(Request $request, Exam $exam)
     {
         $rules = [
-            "file" => "required",
             "keys" => "required",
 
         ];
@@ -36,13 +35,17 @@ class ExamController extends Controller
         $exam->key()->delete();
 
 
-        $extension = "pdf";
-        $filenametostore = md5($exam->id . "drsho1") . '.' . $extension;
-        $uploadedFile = $request->file('file');
-        $uploadedFile->move(public_path("exams/"), $filenametostore);
-        $link = route("pdf", md5($exam->id . "drsho1"));
+        if($request->file('file')){
+            $extension = "pdf";
+            $filenametostore = md5($exam->id . "drsho1") . '.' . $extension;
+            $uploadedFile = $request->file('file');
+            $uploadedFile->move(public_path("exams/"), $filenametostore);
+            $link = route("pdf", md5($exam->id . "drsho1"));
+            $exam->file()->create(["url" =>  $link]);
+        }
+       
         if (
-            $exam->file()->create(["url" =>  $link]) &&
+
             $exam->key()->create(["keys" => $request->keys])
         ) {
             return redirect()->back()->withSuccess("Questions uploaded successfully");

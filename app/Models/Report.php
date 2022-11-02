@@ -23,7 +23,7 @@ class Report extends Model
     }
     public function session()
     {
-        return $this->belongsTo(ExamSession::class);
+        return $this->belongsTo(ExamSession::class, "exam_session_id", "id");
     }
     
 }

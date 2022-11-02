@@ -15,11 +15,13 @@ class ExamSessionResource extends JsonResource
      */
     public function toArray($request)
     {
+        $time = strtotime($this->report->created_at) - $this->started_at;
        
         return [
             "id" => $this->id,
             "ends_in" => $this->ends_in,
             "started_at" => $this->started_at,
+            "elapsed_time" =>  $time >= $this->exam->q_time * 60 ? $this->exam->q_time * 60 :  $time ,
             "answers" => ExamSessionAnswerResource::collection($this->answers()->get())->pluck("a", "q"),
            
         ];

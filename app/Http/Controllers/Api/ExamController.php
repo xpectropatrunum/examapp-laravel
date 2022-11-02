@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Sms;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExamReport;
 use App\Http\Resources\ExamResource;
+use App\Models\Admin;
 use App\Models\Exam;
 use App\Models\ExamSession;
 use App\Models\Report;
@@ -36,7 +38,11 @@ class ExamController extends Controller
     public function sessionAssessment(){
         ExamSession::get()->each(function($item){
             if($item->completed == 1){
-                Report::updateOrCreate(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
+                if(!$item->report){
+                    Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
+                    Sms::notifyAdmin(Admin::first()->phone, $item->user->name, $item->exam->title, "url");
+                }
+              
             }
         });
         
@@ -66,6 +72,7 @@ class ExamController extends Controller
         if ($examSession) {
             if ($examSession->update(["completed" => 1])) {
                 Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
+                Sms::notifyAdmin(Admin::first()->phone, auth()->user()->name, $examSession->exam->title, "url");
                 return ["success" => 1];
             }
         }

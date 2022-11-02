@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Sms;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DoctorResource;
 use App\Models\AltField;
@@ -116,7 +117,11 @@ class ExamController extends Controller
 
 
             foreach ($request->users ?? [] as $user) {
-                $insert->users()->create(["user_id" => $user]);
+                if($insert->users()->updateOrCreate(["user_id" => $user])){
+                    $user = User::find($user);
+
+                    Sms::notifyStudent($user->phone, $user->name);
+                }
             }
 
             return redirect()->route("admin.exams.edit", $insert->id)->withSuccess("Please upload questions!!!");
@@ -181,9 +186,25 @@ class ExamController extends Controller
                 $img->orientate()->encode($extension);
                 File::put("exams/" . $filenametostore, (string) $img);
             }
-            $exam->users()->delete();
+           
+          
+            if(!$request->users){
+                $exam->users()->delete();
+            }else{
+                $all_users = $exam->users()->get()->each(function($query) use($request){
+                    if(!in_array($query->user_id, $request->users)){
+                        $query->delete();
+                    }
+                });
+            }
             foreach ($request->users ?? [] as $user) {
-                $exam->users()->create(["user_id" => $user]);
+                if(!$exam->users()->where("user_id", $user)->first()){
+                    if($exam->users()->create(["user_id" => $user])){
+                        $user = User::find($user);
+                        Sms::notifyStudent($user->phone, $user->name);
+                    }
+                }
+               
             }
             return redirect()->back()->withSuccess("Exam updated successfully");
         }

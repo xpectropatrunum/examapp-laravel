@@ -15,7 +15,7 @@ class ExamSessionResource extends JsonResource
      */
     public function toArray($request)
     {
-        $time = strtotime($this->report->created_at) - $this->started_at;
+        $time = strtotime($this->report?->created_at) - $this->started_at;
        
         return [
             "id" => $this->id,

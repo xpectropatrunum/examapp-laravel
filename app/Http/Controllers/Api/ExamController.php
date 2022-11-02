@@ -30,11 +30,30 @@ class ExamController extends Controller
 
         return ["success" => 1, "data" =>  ExamResource::collection($exams)];
     }
+    public function examReports(){
+        $reports = auth()->user()->reports;
+        if($reports){
+            return ["success" => 1, "data" => $reports];
+        }
+        return ["success" => 0, "msg" => "موردی وجود ندارد"];
+
+
+
+    }
+    public function finishExam(Exam $exam)
+    {
+
+        $examSession = $exam->sessions()->where("completed", "!=", 1)->where(["user_id" => auth()->user()->id])->first();
+        if ($examSession) {
+            if ($examSession->update(["completed" => 1])) {
+                return ["success" => 1];
+            }
+        }
+        return ["success" => 0];
+    }
     public function submitAnswer(Exam $exam, Request $request)
     {
         $examSession = $exam->sessions()->where("completed", "!=", 1)->where(["user_id" => auth()->user()->id])->first();
-
-
         if ($examSession) {
             $m = false;
 

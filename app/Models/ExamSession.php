@@ -14,7 +14,8 @@ class ExamSession extends Model
         'started_at',
         'status',
         'ends_in',
-        'q_time'
+        'q_time',
+        'completed'
      
     ];
     function user(){

@@ -78,7 +78,7 @@ class ExamController extends Controller
     public function create()
     {
         $users = User::orderBy("id", "desc")->get();
-        return view('admin.pages.exams.create', compact( 'users'));
+        return view('admin.pages.exams.create', compact('users'));
     }
 
 
@@ -102,13 +102,15 @@ class ExamController extends Controller
 
         if ($insert) {
 
+            if ($request->file("file")) {
+                $extension = $request->file("file")->getClientOriginalExtension();
+                $filenametostore = md5($insert->id) . '.' . $extension;
+                $img = Image::make($request->file("file"));
+                $img->backup();
+                $img->orientate()->encode($extension);
+                File::put("exams/" . $filenametostore, (string) $img);
+            }
 
-            $extension = $request->file("file")->getClientOriginalExtension();
-            $filenametostore = md5($insert->id) . '.' . $extension;
-            $img = Image::make($request->file("file"));
-            $img->backup();
-            $img->orientate()->encode($extension);
-            File::put("exams/" . $filenametostore, (string) $img);
 
             foreach ($request->users ?? [] as $user) {
                 $insert->users()->create(["user_id" => $user]);
@@ -168,12 +170,14 @@ class ExamController extends Controller
 
 
         if ($exam->update($request->all())) {
-            $extension = $request->file("file")->getClientOriginalExtension();
-            $filenametostore = md5($exam->id) . '.' . $extension;
-            $img = Image::make($request->file("file"));
-            $img->backup();
-            $img->orientate()->encode($extension);
-            File::put("exams/" . $filenametostore, (string) $img);
+            if ($request->file("file")) {
+                $extension = $request->file("file")->getClientOriginalExtension();
+                $filenametostore = md5($exam->id) . '.' . $extension;
+                $img = Image::make($request->file("file"));
+                $img->backup();
+                $img->orientate()->encode($extension);
+                File::put("exams/" . $filenametostore, (string) $img);
+            }
             $exam->users()->delete();
             foreach ($request->users ?? [] as $user) {
                 $exam->users()->create(["user_id" => $user]);

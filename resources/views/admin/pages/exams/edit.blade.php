@@ -52,7 +52,7 @@
                                     <div class="form-group col-lg-5">
                                         <label>image</label>
                                         <input type="file" value="{{ old('file') }}" name="file"
-                                            class="d-block @error('file') is-invalid @enderror" required>
+                                            class="d-block @error('file') is-invalid @enderror">
                                        
                                   
                                             <img src="{{$exam->image}}" width="150">

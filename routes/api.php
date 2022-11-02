@@ -39,5 +39,7 @@ Route::prefix('exams')->group(function () {
     Route::get("init/{exam}", [ExamController::class, "init"]);
     Route::get("get/{exam}", [ExamController::class, "get"]);
     Route::post("{exam}/submit-answer", [ExamController::class, "submitAnswer"]);
+    Route::post("{exam}/finish", [ExamController::class, "finishExam"]);
+    Route::get("exam-reports", [ExamController::class, "examReports"]);
     //Route::post("change-image", [UserController::class, "changeImage"]);
 });

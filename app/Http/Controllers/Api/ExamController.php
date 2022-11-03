@@ -101,7 +101,8 @@ class ExamController extends Controller
     {
         $file = public_path() . DIRECTORY_SEPARATOR . 'exams' . DIRECTORY_SEPARATOR . "$hash.pdf";
 
-        $response = Response::make($file, 200);
+        header('Access-Control-Allow-Origin', '*');
+        header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         return Response::make(file_get_contents($file), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $hash . '"'

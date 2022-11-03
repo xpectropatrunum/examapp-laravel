@@ -109,7 +109,10 @@ class ExamController extends Controller
         header('Access-Control-Allow-Origin', '*');
         header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD');
         return Response::make(file_get_contents($file), 200, 
-       
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $hash . '"'
+        ]
     
     );
     }

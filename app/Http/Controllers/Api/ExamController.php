@@ -70,10 +70,15 @@ class ExamController extends Controller
 
         $examSession = $exam->sessions()->where("completed", "!=", 1)->where(["user_id" => auth()->user()->id])->first();
         if ($examSession) {
-            if ($examSession->update(["completed" => 1])) {
-                Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
-                Sms::notifyAdmin(Admin::first()->phone, auth()->user()->name, $examSession->exam->title, "url");
-                return ["success" => 1];
+
+
+            if ($examSession->completed != 1) {
+                if($examSession->update(["completed" => 1])){
+                    Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
+                    Sms::notifyAdmin(Admin::first()->phone, auth()->user()->name, $examSession->exam->title, "url");
+                    return ["success" => 1];
+                }
+               
             }
         }
         return ["success" => 0];

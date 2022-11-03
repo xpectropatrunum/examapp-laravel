@@ -29,13 +29,23 @@ class ExamResultController extends Controller
         $query = Report::orderBy("created_at", "desc");
         if ($request->search) {
             $search = $request->search;
-            $query = $query
-                ->where("title", "LIKE", "%{$request->search}%");
+            $query = $query->whereHas("user", function($m) use($search){
+                return $m->where("name", "LIKE", "%{$search}%");
+            })->orWhereHas("exam", function($m) use($search){
+                return $m->where("title", "LIKE", "%{$search}%");
+            });      
+        }
+        if ($request->uid) {
+            $uid = $request->uid;
+            $query = $query->whereHas("user", function($m) use($uid){
+                return $m->where("id", "LIKE", "%{$uid}%");
+            });
+                
         }
         if ($request->limit) {
             $limit = $request->limit;
         }
-        $reports = new ExamReport($query->paginate($limit));
+        $reports = $query->paginate($limit);
         return view("admin.pages.exam-results.index", compact('reports', 'limit', 'search'));
     }
 

@@ -102,6 +102,12 @@
                                                 {{ __('admin.edit') }}
                                             </a>
 
+                                            <a class="btn btn-success btn-sm"
+                                            href="{{ route('admin.exam-results.index', ["uid" => $item->id]) }}">
+                                            <i class="fas fa-file"></i>
+                                            Exams
+                                        </a>
+
                                             <form action="{{ route('admin.users.destroy', $item->id) }}"
                                                 class="d-inline-block" method="POST">
                                                 @csrf

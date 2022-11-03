@@ -61,7 +61,7 @@
                                     <th>#</th>
                                     <th>{{ 'User' }}</th>
                                     <th>{{ 'Exam' }}</th>
-                                    <th>{{ 'Result' }}</th>
+                                    <th>{{ 'Score' }}</th>
                                     <th>{{ __('admin.created_date') }}</th>
                                     <th>{{ __('admin.actions') }}</th>
                                 </tr>
@@ -100,6 +100,8 @@
                                                 <i class="fas fa-eye"></i>
                                                 Show
                                             </a>
+
+                                       
 
 
                                         </td>

@@ -27,7 +27,7 @@
                                 href="#custom-basic-home" role="tab" aria-controls="custom-basic-home"
                                 aria-selected="true">Result</a>
                         </li>
-                       
+
 
                     </ul>
                 </div>
@@ -41,89 +41,99 @@
 
                         <div class="tab-pane fade show active" id="custom-basic-home" role="tabpanel"
                             aria-labelledby="custom-tabs-basic-tab">
-                           
-                                <div class="row">
-                                    <div class="form-group col-lg-5">
-                                        <label>image (optional + .png format)</label>
 
-                                        <input type="file" value="{{ old('file') }}" name="file"
-                                            class="d-block @error('file') is-invalid @enderror">
-                                       
-                                  
-                                            <img src="{{$report->exam->image}}" width="150">
-                                                
-                                      
-                                    </div>
+                            <div class="row">
+                                <h3 class="col-12">User</h3>
 
-                                    <div class="form-group col-lg-5">
-                                        <label>title</label>
-                                        <input type="text" value="{{ old('title', $exam->title) }}" name="title"
-                                            class="form-control @error('title') is-invalid @enderror"
-                                            placeholder="مثلا: جمع بندی" required>
-                                    </div>
-
-
-                                    <div class="form-group col-lg-5">
-                                        <label>type</label>
-                                        <input type="text" value="{{ old('type', $exam->type) }}" name="type"
-                                            class="form-control @error('type') is-invalid @enderror" placeholder="شیمی"
-                                            required>
-                                    </div>
-
-                                    <div class="form-group col-lg-5">
-                                        <label>question count</label>
-                                        <input type="number" value="{{ old('q_number', $exam->q_number) }}" name="q_number"
-                                            class="form-control @error('q_number') is-invalid @enderror" placeholder="20"
-                                            required>
-                                    </div>
-                                    <div class="form-group col-lg-5">
-                                        <label>time (in minutes)</label>
-                                        <input type="number" value="{{ old('q_time', $exam->q_time) }}" name="q_time"
-                                            class="form-control @error('q_time') is-invalid @enderror" placeholder="40"
-                                            required>
-                                    </div>
-
-                                    <div class="form-group col-lg-10">
-                                        <label>description</label>
-                                        <textarea type="text" name="description" class="form-control">{{ old('description', $exam->description) }}</textarea>
-                                    </div>
-
-                                    <div class="form-group col-lg-12">
-                                        <label>users</label>
-                                        <select name="users[]" class="form-control select2" multiple>
-                                            <option></option>
-                                            @foreach ($users as $user)
-                                                <option value="{{ $user->id }}"
-                                                    @if ($exam->users()->where('user_id', $user->id)->first()) selected @endif>
-                                                    {{ $user->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-
-
-                                    <div class="form-group col-lg-5">
-                                        <label>active</label>
-                                        <div class="form-check">
-                                            <input type="checkbox" name="is_active" class="form-check-input" value="1"
-                                                id="exampleCheck2" @if (old('is_active', $exam->is_active)) checked @endif>
-                                            <label class="form-check-label" for="exampleCheck2"> Yes</label>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group col-lg-5">
-                                        <label>has negative score?</label>
-                                        <div class="form-check">
-                                            <input type="checkbox" name="neg_score" class="form-check-input" value="1"
-                                                id="exampleCheck2" @if (old('neg_score', $exam->neg_score)) checked @endif>
-                                            <label class="form-check-label" for="exampleCheck2"> Yes</label>
-                                        </div>
-                                    </div>
-
+                                <div class="form-group col-lg-4">
+                                    <label>name</label>
+                                    <div> {{ $report->user->name }}</div>
 
                                 </div>
-                                <button type="submit" class="btn btn-primary">{{ __('admin.update') }}</button>
+                                <div class="form-group col-lg-4">
+                                    <label>phone</label>
+                                    <div> {{ $report->user->phone }}</div>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label>sex</label>
+                                    <div> {{ $report->user->sex ? 'male' : 'female' }}</div>
+                                </div>
+                                <hr style="
+                                width: 100%;
+                            ">
+
+                                <h3 class="col-12 mt-3">Exam</h3>
+                                <div class="form-group col-lg-3">
+                                    <label>title</label>
+                                    <div> {{ $report->exam->title }}</div>
+
+                                </div>
+                                <div class="form-group col-lg-3">
+                                    <label>type</label>
+                                    <div> {{ $report->exam->type }}</div>
+                                </div>
+                                <div class="form-group col-lg-3">
+                                    <label>question count</label>
+                                    <div> {{ $report->exam->q_number }}</div>
+                                </div>
+                                <div class="form-group col-lg-3">
+                                    <label>time</label>
+                                    <div> {{ $report->exam->q_time }} minutes</div>
+                                </div>
+
+                                @php
+                                    $correct = 0;
+                                    $false = 0;
+                                    $b_item = $report->session;
+                                    $keys = $b_item->exam->key->keys;
+                                    $answers = $b_item->answers;
+                                    foreach ($answers as $item_) {
+                                        if ($keys[$item_->q - 1] == $item_->a) {
+                                            $correct += 1;
+                                        } else {
+                                            $false += 1;
+                                        }
+                                    }
+                                    
+                                    $percentage = round(($correct * 3 - ($b_item->exam->neg_score ? $false : 0)) / ($b_item->exam->q_number * 3), 4);
+                                    
+                                @endphp
+
+
+                                <hr style="
+width: 100%;
+">
+
+                                <h3 class="col-12 mt-3">Result</h3>
+                                <div class="form-group col-lg-3">
+                                    <label>correct count</label>
+                                    <div> {{ $correct }}</div>
+
+                                </div>
+                                <div class="form-group col-lg-3">
+                                    <label>wrong count</label>
+                                    <div> {{ $false }}</div>
+                                </div>
+                                <div class="form-group col-lg-3">
+                                    <label>negative score?</label>
+                                    <div> {{ $report->exam->neg_score ? 'Yes' : 'No' }}</div>
+                                </div>
+
+
+                                <div class="form-group col-lg-3">
+                                    <label>score</label>
+                                    <div> {{ $percentage * 100 }}%</div>
+                                </div>
+
+
+
+
+
+
+
+
+                            </div>
+
 
 
                         </div>
@@ -131,7 +141,7 @@
 
 
 
-                  
+
                     </div>
 
 

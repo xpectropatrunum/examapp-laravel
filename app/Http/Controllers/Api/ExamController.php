@@ -39,8 +39,8 @@ class ExamController extends Controller
         ExamSession::get()->each(function($item){
             if($item->completed == 1){
                 if(!$item->report){
-                    Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
-                    Sms::notifyAdmin(Admin::first()->phone, $item->user->name, $item->exam->title, "url");
+                    $r =Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
+                    Sms::notifyAdmin(Admin::first()->phone, $item->user->name, $item->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
                 }
               
             }
@@ -74,8 +74,8 @@ class ExamController extends Controller
 
             if ($examSession->completed != 1) {
                 if($examSession->update(["completed" => 1])){
-                    Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
-                    Sms::notifyAdmin(Admin::first()->phone, auth()->user()->name, $examSession->exam->title, "url");
+                    $r = Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
+                    Sms::notifyAdmin(Admin::first()->phone, auth()->user()->name, $examSession->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
                     return ["success" => 1];
                 }
                

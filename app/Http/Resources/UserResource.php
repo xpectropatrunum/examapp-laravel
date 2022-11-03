@@ -17,6 +17,7 @@ class UserResource extends JsonResource
     {
         return [
             "name" => $this->name,
+            "id" => $this->id,
             "dashboard_msg" => Cache::get("dashboard_msg", ""),
             "phone" => $this->phone,
             "image" => $this->image?->url ?? env("APP_URL") . "/profile/" . ($this->sex == 0 ? "male":"female") . "-" .(( $this->id % 6 )  + 1). ".png",

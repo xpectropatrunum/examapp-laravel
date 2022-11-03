@@ -39,8 +39,8 @@ class endedExam implements ShouldQueue
         ExamSession::get()->each(function($item){
             if($item->completed == 1){
                 if(!$item->report){
-                    Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
-                    Sms::notifyAdmin(Admin::first()->phone, $item->user->name, $item->exam->title, "url");
+                    $r = Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
+                    Sms::notifyAdmin(Admin::first()->phone, $item->user->name, $item->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
                 }
               
             }

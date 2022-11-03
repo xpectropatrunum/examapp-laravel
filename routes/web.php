@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Admin\ExamResultController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\ExamController as ApiExamController;
@@ -41,6 +42,9 @@ Route::get('login', [LoginController::class, 'index'])->name("login");
         Route::resource('exams', ExamController::class);
         Route::post('exams/{user}/status', [ExamController::class, 'changeStatus'])->name('exams.status');
         Route::post('exams/save-question/{exam}', [ExamController::class, 'saveQuestion'])->name('exams.save-question');
+
+        Route::resource('exam-results', ExamResultController::class);
+
 
         Route::resource('settings', SettingController::class);
 

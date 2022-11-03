@@ -77,6 +77,37 @@
                 </ul>
             </li>
 
+            <li class="nav-item has-treeview {{ request()->routeIs(['admin.exam-results.*']) ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-file"></i>
+                    <p>
+                        Exam Results
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul
+                    class="nav nav-treeview {{ request()->routeIs(['admin.exam-results.*']) ? 'd-block' : 'display-none' }}">
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.exam-results.index') }}"
+                            class="nav-link {{ request()->routeIs(['admin.exam-results.index']) ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>All </p>
+                        </a>
+                    </li>
+
+
+
+
+                </ul>
+            </li>
+
+
+
+
+
+
+
             <li class="nav-item has-treeview {{ request()->routeIs(['admin.settings.*']) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-cog"></i>

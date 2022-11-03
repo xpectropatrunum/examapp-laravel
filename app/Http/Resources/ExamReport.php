@@ -4,7 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ExamReport extends JsonResource
+use Illuminate\Http\Resources\Json\ResourceCollection;
+class ExamReport extends ResourceCollection
 {
     /**
      * Transform the resource into an array.
@@ -12,11 +13,13 @@ class ExamReport extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+    
     public function toArray($request)
     {
 
         return [
             "id" => $this->id,
+            "created_at" => $this->created_at,
             "user" => UserResource::make($this->user),
             "exam" => ExamResource::make($this->exam),
             "result" => ExamResult::make($this->session),

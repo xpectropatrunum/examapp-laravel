@@ -27,7 +27,7 @@ class ExamResource extends JsonResource
             "neg_score" => $this->neg_score,
             "image" => $this->image,
             "is_active" => $this->is_active,
-            "file" => env("APP_URL") . "/exams/" . md5($this->id .  "drsho1") . ".pdf",
+            "file" => $this->file?->url,
             "file_raw" => env("APP_URL") . "/exams/" . md5($this->id .  "drsho1") . ".pdf",
             "completed" =>  $session?->completed ? 1 : 0,
             "session" => ExamSessionResource::make($session),

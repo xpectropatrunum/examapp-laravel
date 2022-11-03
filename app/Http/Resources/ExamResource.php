@@ -28,6 +28,7 @@ class ExamResource extends JsonResource
             "image" => $this->image,
             "is_active" => $this->is_active,
             "file" => $this->file?->url,
+            "file_raw" => env("APP_URL") . "/exams/" . md5($this->id) . ".pdf",
             "completed" =>  $session?->completed ? 1 : 0,
             "session" => ExamSessionResource::make($session),
             "resumable" => ! $session?->completed  &&  $session

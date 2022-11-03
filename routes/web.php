@@ -48,3 +48,4 @@ Route::get('login', [LoginController::class, 'index'])->name("login");
 });
 
 Route::get('/pdf/{hash}',[ApiExamController::class, "pdf"])->name("pdf");
+

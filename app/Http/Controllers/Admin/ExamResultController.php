@@ -31,7 +31,7 @@ class ExamResultController extends Controller
            
 
             
-            $e_users =  auth()->guard("expert")->user()->expertUser()->pluck("id");
+            $e_users =  auth()->guard("expert")->user()->expertUser()->pluck("user_id");
 
 
             $query = Report::orderBy("created_at", "desc")->whereIn("user_id", $e_users);

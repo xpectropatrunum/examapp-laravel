@@ -27,11 +27,15 @@ class ExamResultController extends Controller
         $search = "";
         $limit = 10;
         $query = Report::orderBy("created_at", "desc");
+        $e_users =  auth()->guard("expert")->user()->users();
         if (auth()->guard("expert")->check()) {
-            $query = Report::orderBy("created_at", "desc")->whereHas("user", function ($m) {
-                return $m->whereHas("expert", function ($mn) {
-                    return $mn->where("experts.id", auth()->guard("expert")->user()->id);
-                });
+           
+
+            
+
+
+            $query = Report::orderBy("created_at", "desc")->whereHas("user", function ($m) use($e_users){
+                return $e_users->find($m->id);
             });
         }
         if ($request->search) {
@@ -62,7 +66,7 @@ class ExamResultController extends Controller
         if (!$report) {
             abort(404);
         }
-        
+
         if (auth()->guard("expert")->check()) {
           
             if (!auth()->guard("expert")->user()->users()->find($report->user->id)) {

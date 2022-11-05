@@ -30,7 +30,7 @@ Route::get('/4', function () {
 Route::prefix("admin")->name("admin.")->group(function () {
 Route::get('login', [LoginController::class, 'index'])->name("login");
 
-    Route::get('logout', [LoginController::class, 'logout'])->name("logout");
+    Route::post('logout', [LoginController::class, 'logout'])->name("logout");
     Route::post('login/attemp', [LoginController::class, 'loginAttemp'])->name("login.attemp");
     Route::middleware('auth:admin,expert')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name("dashboard");

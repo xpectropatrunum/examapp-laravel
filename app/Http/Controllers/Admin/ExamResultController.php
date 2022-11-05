@@ -59,17 +59,18 @@ class ExamResultController extends Controller
     public function show($id)
     {
         $report = Report::where("id", $id)->first();
+        if (!$report) {
+            abort(404);
+        }
+        
         if (auth()->guard("expert")->check()) {
-            print_r(auth()->guard("expert")->user()->users()->first());
-            die();
+          
             if (!auth()->guard("expert")->user()->users()->find($report->user->id)) {
                 abort(404);
             }
         }
 
-        if (!$report) {
-            abort(404);
-        }
+       
 
         return view("admin.pages.exam-results.show", compact('report'));
     }

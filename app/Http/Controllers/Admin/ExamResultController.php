@@ -31,12 +31,10 @@ class ExamResultController extends Controller
            
 
             
-            $e_users =  auth()->guard("expert")->user()->users();
+            $e_users =  auth()->guard("expert")->user()->expertUser()->pluck("id");
 
 
-            $query = Report::orderBy("created_at", "desc")->whereHas("user", function ($m) use($e_users){
-                return $e_users->find($m->first()->id);
-            });
+            $query = Report::orderBy("created_at", "desc")->whereIn("user_id", $e_users);
         }
         if ($request->search) {
             $search = $request->search;

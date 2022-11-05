@@ -175,6 +175,7 @@ class ExpertController extends Controller
     {
         $e = Expert::find($e);
         if ($e->delete()) {
+            $e->expertUser()->delete();
             return redirect()->route("admin.experts.index")->withSuccess("Specialty removed successfully");
         }
         return redirect()->route("admin.experts.index")->withError("Database Error");

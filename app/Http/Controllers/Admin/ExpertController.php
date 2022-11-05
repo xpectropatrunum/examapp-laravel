@@ -153,8 +153,8 @@ class ExpertController extends Controller
                 });
             }
             foreach ($request->users ?? [] as $user) {
-                if(!$expert->users()->where("user_id", $user)->first()){
-                    if($expert->users()->create(["user_id" => $user])){
+                if(!$expert->expertUser()->where("user_id", $user)->first()){
+                    if($expert->expertUser()->create(["user_id" => $user])){
                         $user = User::find($user);
                     }
                 }

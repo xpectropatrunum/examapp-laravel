@@ -54,7 +54,7 @@ class ExamController extends Controller
         ///**important */
         $this->sessionAssessment();
         ////***** */
-        $reports = auth()->user()->reports;
+        $reports = auth()->user()->reports()->orderBy("id", "desc")->get();
         if ($reports) {
             return ["success" => 1, "data" => ExamReport::collection($reports)];
         }

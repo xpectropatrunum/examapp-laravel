@@ -60,6 +60,8 @@ class ExamResultController extends Controller
     {
         $report = Report::where("id", $id)->first();
         if (auth()->guard("expert")->check()) {
+            echo  $report->user->id;
+            die();
             if (auth()->guard("expert")->user()->users()->whereNot("id", $report->user->id)) {
                 abort(404);
             }

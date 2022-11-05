@@ -9,6 +9,7 @@ use App\Http\Resources\ExamResource;
 use App\Models\Admin;
 use App\Models\Exam;
 use App\Models\ExamSession;
+use App\Models\Expert;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -75,7 +76,7 @@ class ExamController extends Controller
             if ($examSession->completed != 1) {
                 if($examSession->update(["completed" => 1])){
                     $r = Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
-                    Sms::notifyAdmin(Admin::first()->phone, auth()->user()->name, $examSession->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
+                    Sms::notifyAdmin(Expert::users()->find(auth()->user()->id)->first()->phone, auth()->user()->name, $examSession->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
                     return ["success" => 1];
                 }
                

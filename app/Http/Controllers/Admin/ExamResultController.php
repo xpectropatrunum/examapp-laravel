@@ -60,7 +60,7 @@ class ExamResultController extends Controller
     {
         $report = Report::where("id", $id)->first();
         if (auth()->guard("expert")->check()) {
-            if (!auth()->guard("expert")->users()->where("id", $report->user->id)) {
+            if (!auth()->guard("expert")->user()->users()->where("id", $report->user->id)) {
                 abort(404);
             }
         }

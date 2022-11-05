@@ -28,13 +28,14 @@ class ExamResultController extends Controller
         $limit = 10;
         $query = Report::orderBy("created_at", "desc");
         if (auth()->guard("expert")->check()) {
-           
-
+       
             
-            $e_users =  auth()->guard("expert")->user()->expertUser()->pluck("user_id");
-
-
+           $e_users =  auth()->guard("expert")->user()->expertUser()->pluck("user_id");
             $query = Report::orderBy("created_at", "desc")->whereIn("user_id", $e_users);
+
+       
+
+
         }
         if ($request->search) {
             $search = $request->search;

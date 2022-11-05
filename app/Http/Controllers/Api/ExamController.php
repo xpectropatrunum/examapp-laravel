@@ -36,32 +36,34 @@ class ExamController extends Controller
 
         return ["success" => 1, "data" =>  ExamResource::collection($exams)];
     }
-    public function sessionAssessment(){
-        ExamSession::get()->each(function($item){
-            if($item->completed == 1){
-                if(!$item->report){
-                    $r =Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
-                    Sms::notifyAdmin(Admin::first()->phone, $item->user->name, $item->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
+    public function sessionAssessment()
+    {
+        ExamSession::get()->each(function ($item) {
+            if ($item->completed == 1) {
+                if (!$item->report) {
+                    $r = Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
+                    $phone = $item->user->expert()->first()->phone;
+                    Sms::notifyAdmin($phone, $item->user->name, $item->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
                 }
-              
             }
         });
-        
     }
-    
-    public function examReports(){
+
+    public function examReports()
+    {
         ///**important */
         $this->sessionAssessment();
         ////***** */
         $reports = auth()->user()->reports;
-        if($reports){
+        if ($reports) {
             return ["success" => 1, "data" => ExamReport::collection($reports)];
         }
         return ["success" => 0, "msg" => "موردی وجود ندارد"];
     }
-    public function getReport(Report $report){
-        
-        if($report){
+    public function getReport(Report $report)
+    {
+
+        if ($report) {
             return ["success" => 1, "data" => ExamReport::make($report)];
         }
         return ["success" => 0, "msg" => "موردی وجود ندارد"];
@@ -74,12 +76,12 @@ class ExamController extends Controller
 
 
             if ($examSession->completed != 1) {
-                if($examSession->update(["completed" => 1])){
+                if ($examSession->update(["completed" => 1])) {
                     $r = Report::create(["user_id" => auth()->user()->id, "exam_session_id" => $examSession->id, "exam_id" => $exam->id]);
-                    Sms::notifyAdmin(Expert::users()->find(auth()->user()->id)->first()->phone, auth()->user()->name, $examSession->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
+                    $phone = $examSession->user->expert()->first()->phone;
+                    Sms::notifyAdmin($phone, auth()->user()->name, $examSession->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
                     return ["success" => 1];
                 }
-               
             }
         }
         return ["success" => 0];
@@ -109,13 +111,15 @@ class ExamController extends Controller
 
         header('Access-Control-Allow-Origin', '*');
         header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD');
-        return Response::make(file_get_contents($file), 200, 
-        [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $hash . '"'
-        ]
-    
-    );
+        return Response::make(
+            file_get_contents($file),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $hash . '"'
+            ]
+
+        );
     }
     public function init($exam)
     {

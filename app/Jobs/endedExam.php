@@ -40,7 +40,8 @@ class endedExam implements ShouldQueue
             if($item->completed == 1){
                 if(!$item->report){
                     $r = Report::Create(["user_id" => $item->user->id, "exam_session_id" => $item->id, "exam_id" => $item->exam->id]);
-                    Sms::notifyAdmin(Admin::first()->phone, $item->user->name, $item->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
+                    $phone = $item->user->expert()->first()->phone;
+                    Sms::notifyAdmin($phone, $item->user->name, $item->exam->title, "https://api.drsho1.ir/admin/exam-results/" . $r->id);
                 }
               
             }

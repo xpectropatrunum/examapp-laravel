@@ -35,6 +35,7 @@ class User extends Authenticatable implements JWTSubject
     function exams(){
         return $this->belongsToMany(Exam::class, ExamUser::class);
     }
+ 
 
     /**
      * The attributes that are mass assignable.
@@ -57,10 +58,12 @@ class User extends Authenticatable implements JWTSubject
     public function reports(){
         return $this->hasMany(Report::class);
     }
-    public function expert()
-    {
-        return $this->belongsTo(Expert::class,  "id", "id",ExpertUser::class,);
+
+    function expert(){
+        return $this->belongsToMany(Expert::class, ExpertUser::class);
     }
+ 
+
 
     /**
      * The attributes that should be hidden for serialization.

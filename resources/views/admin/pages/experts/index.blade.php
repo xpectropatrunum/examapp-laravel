@@ -1,17 +1,16 @@
 @extends('admin.layouts.master')
 
-@section('title', 'users')
+@section('title', 'experts')
 
 @section('content_header')
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1 class="m-0 text-dark">users</h1>
+            <h1 class="m-0 text-dark">experts list</h1>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb @if (app()->getLocale() == 'fa') float-sm-left @else float-sm-right @endif">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('admin.dashboard') }}</a>
-                </li>
-                <li class="breadcrumb-item active">users</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">dashboard</a></li>
+                <li class="breadcrumb-item active">experts</li>
             </ol>
         </div>
     </div>
@@ -23,11 +22,13 @@
             <!-- Default box -->
             <div class="card">
                 <div class="card-header d-flex align-items-center px-3">
-                    <h3 class="card-title">users</h3>
-
+                    <h3 class="card-title">experts</h3>
+                    <a class="btn btn-outline-primary btn-sm mx-3" href="{{ route('admin.experts.create') }}"><i
+                            class="fa fa-plus"></i> {{ __('admin.add_new') }}</a>
                 </div>
                 <div class="card-body p-3">
-                    <form class="frm-filter" action="{{ route('admin.users.index') }}" type="post" autocomplete="off">
+                    <form class="frm-filter" action="{{ route('admin.experts.index') }}" type="post"
+                        autocomplete="off">
                         @csrf
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -55,83 +56,55 @@
                     </form>
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered mb-0 text-nowrap">
+                        <table class="table table-striped table-bordered text-nowrap mb-0">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>{{ __('admin.full_name') }}</th>
+                                    <th>{{ 'Name' }}</th>
                                     <th>{{ 'Phone' }}</th>
-                                    <th>{{ 'Sex' }}</th>
+                                    <th>{{ 'Student count' }}</th>
                                     <th>{{ __('admin.created_date') }}</th>
-                                    @if (auth()->guard('admin')->check())
-                                        <th>{{ 'Enabled' }}</th>
-                                    @endif
-                                    <th>{{ 'Actions' }}</th>
-
-
-
+                                    <th>{{ __('admin.status') }}</th>
+                                    <th>{{ __('admin.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($items as $item)
+                                @foreach ($experts as $item)
                                     <tr>
                                         <td>{{ $item->id }}</td>
-                                        <td>
-
-                                            {{ $item->name }}
-
-                                        </td>
+                                        <td>{{ $item->name }}</td>
                                         <td>{{ $item->phone }}</td>
-                                        <td>{{ $item->sex == 0 ? 'Male' : 'Female' }}</td>
-
-                                        <td>{{ (new Shamsi())->jdate($item->created_at, true) }}</td>
-                                        @if (auth()->guard('admin')->check())
-                                            <td>
-                                                <div class="form-check">
-                                                    <input type="checkbox"
-                                                        data-url="{{ route('admin.users.status', $item->id) }}"
-                                                        data-id="{{ $item->id }}" class="form-check-input changeStatus"
-                                                        id="exampleCheck{{ $item->id }}"
-                                                        @if ($item->is_active) checked @endif>
-                                                    <label class="form-check-label" for="exampleCheck{{ $item->id }}">
-                                                        enable</label>
-                                                </div>
-
-
-
-                                            </td>
-                                        @endif
-                                        <td class="project-actions">
-                                            @if (auth()->guard('admin')->check())
-                                                <a class="btn btn-info btn-sm"
-                                                    href="{{ route('admin.users.edit', $item->id) }}">
-                                                    <i class="fas fa-pen"></i>
-                                                    {{ __('admin.edit') }}
-                                                </a>
-                                            @endif
-
-
-                                            <a class="btn btn-success btn-sm"
-                                                href="{{ route('admin.exam-results.index', ['uid' => $item->id]) }}">
-                                                <i class="fas fa-file"></i>
-                                                Exams
-                                            </a>
-                                            @if (auth()->guard('admin')->check())
-                                                <form action="{{ route('admin.users.destroy', $item->id) }}"
-                                                    class="d-inline-block" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" onclick="swalConfirmDelete(this)"
-                                                        class="btn btn-danger btn-sm">
-                                                        <i class="fas fa-trash"></i>
-                                                        {{ __('admin.delete') }}
-                                                    </button>
-                                                </form>
-                                            @endif
-
-
+                                        <td>{{ $item->users->count() }}</td>
+                                        <td>{{ (new Shamsi())->jdate($item->created_at) }}</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox"
+                                                    data-url="{{ route('admin.experts.status', $item->id) }}"
+                                                    data-id="{{ $item->id }}" class="form-check-input changeStatus"
+                                                    id="exampleCheck{{ $item->id }}"
+                                                    @if ($item->is_active) checked @endif>
+                                                <label class="form-check-label" for="exampleCheck{{ $item->id }}">
+                                                    enable</label>
+                                            </div>
                                         </td>
+                                        <td class="project-actions">
+                                            <a class="btn btn-info btn-sm"
+                                                href="{{ route('admin.experts.edit', $item->id) }}">
+                                                <i class="fas fa-pencil-alt"></i>
+                                                {{ __('admin.edit') }}
+                                            </a>
 
+                                            <form action="{{ route('admin.experts.destroy', $item->id) }}"
+                                                class="d-inline-block" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" onclick="swalConfirmDelete(this)"
+                                                    class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                    {{ __('admin.delete') }}
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -139,13 +112,12 @@
                     </div>
                 </div>
                 <div class="cart-footer p-3 d-block d-md-flex justify-content-between align-items-center border-top">
-                    {{ $items->onEachSide(0)->links('admin.partials.pagination') }}
+                    {{ $experts->onEachSide(0)->links('admin.partials.pagination') }}
 
                     <p class="text-center mb-0">
-                        {{ __('admin.display') . ' ' . $items->firstItem() . ' ' . __('admin.to') . ' ' . $items->lastItem() . ' ' . __('admin.from') . ' ' . $items->total() . ' ' . __('admin.rows') }}
+                        {{ __('admin.display') . ' ' . $experts->firstItem() . ' ' . __('admin.to') . ' ' . $experts->lastItem() . ' ' . __('admin.from') . ' ' . $experts->total() . ' ' . __('admin.rows') }}
                     </p>
                 </div>
-                <!-- /.card-body -->
             </div>
             <!-- /.card -->
         </div>

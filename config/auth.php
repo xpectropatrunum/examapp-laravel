@@ -27,6 +27,10 @@ return [
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
+        ],
+        'expert' => [
+            'driver' => 'session',
+            'provider' => 'experts',
         ]
     ],
 
@@ -56,6 +60,10 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+        'experts' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Expert::class,
         ]
     ],
 

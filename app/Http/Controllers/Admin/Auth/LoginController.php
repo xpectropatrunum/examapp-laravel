@@ -27,6 +27,13 @@ class LoginController extends Controller
                 ->intended(route('admin.dashboard'))
                 ->with('status', __('admin.login_success'));
         }
+        $request->merge(["phone" => $request->username]);
+      
+        if (Auth::guard('expert')->attempt($request->only("phone", "password"))) {
+            return redirect()
+                ->intended(route('admin.dashboard'))
+                ->with('status', __('admin.login_success'));
+        }
 
         //Authentication failed...
         return $this->loginFailed();

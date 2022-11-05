@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ExamResultController;
+use App\Http\Controllers\Admin\ExpertController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Api\ExamController as ApiExamController;
@@ -31,7 +32,7 @@ Route::get('login', [LoginController::class, 'index'])->name("login");
 
     Route::get('logout', [LoginController::class, 'logout'])->name("logout");
     Route::post('login/attemp', [LoginController::class, 'loginAttemp'])->name("login.attemp");
-    Route::middleware('auth:admin')->group(function () {
+    Route::middleware('auth:admin,expert')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name("dashboard");
 
 
@@ -44,6 +45,9 @@ Route::get('login', [LoginController::class, 'index'])->name("login");
         Route::post('exams/save-question/{exam}', [ExamController::class, 'saveQuestion'])->name('exams.save-question');
 
         Route::resource('exam-results', ExamResultController::class);
+
+        Route::resource('experts', ExpertController::class);
+        Route::post('experts/{expert}/status', [ExpertController::class, 'changeStatus'])->name('experts.status');
 
 
         Route::resource('settings', SettingController::class);

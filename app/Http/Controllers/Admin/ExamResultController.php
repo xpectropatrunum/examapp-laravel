@@ -27,6 +27,15 @@ class ExamResultController extends Controller
         $search = "";
         $limit = 10;
         $query = Report::orderBy("created_at", "desc");
+        if(auth()->guard("expert")->check()){
+            $query = Report::orderBy("created_at", "desc")->whereHas("user", function($m){
+                return $m->whereHas("expert", function($mn){
+                    return $mn->where("experts.id", auth()->guard("expert")->user()->id);
+                });
+            });
+
+
+        }
         if ($request->search) {
             $search = $request->search;
             $query = $query->whereHas("user", function($m) use($search){

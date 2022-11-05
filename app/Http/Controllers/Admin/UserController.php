@@ -38,6 +38,9 @@ class UserController extends Controller
 
 
         $query = User::query();
+        if(auth()->guard("expert")->check()){
+            $query = auth()->user()->users();
+        }
         if ($request->search) {
             $searching_for = $request->search;
             $search = $request->search;

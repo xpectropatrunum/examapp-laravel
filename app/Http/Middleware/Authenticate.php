@@ -23,7 +23,7 @@ class Authenticate extends Middleware
     
             }
         }else{
-            if(!Auth::guard('admin')->check()){
+            if(!Auth::guard('admin')->check() && !Auth::guard('expert')->check()){
                 return route("admin.login");
     
             }

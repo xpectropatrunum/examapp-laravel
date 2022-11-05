@@ -57,6 +57,10 @@ class User extends Authenticatable implements JWTSubject
     public function reports(){
         return $this->hasMany(Report::class);
     }
+    public function expert()
+    {
+        return $this->belongsTo(Expert::class,  "id", "id",ExpertUser::class,);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

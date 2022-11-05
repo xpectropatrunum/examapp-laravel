@@ -78,7 +78,7 @@ class ExpertController extends Controller
            
 
             foreach ($request->users ?? [] as $user) {
-                if($insert->users()->updateOrCreate(["user_id" => $user])){
+                if($insert->expertUser()->updateOrCreate(["user_id" => $user])){
                     $user = User::find($user);
                 }
             }
@@ -144,9 +144,9 @@ class ExpertController extends Controller
           
           
             if(!$request->users){
-                $expert->users()->delete();
+                $expert->expertUser()->delete();
             }else{
-                $all_users = $expert->users()->get()->each(function($query) use($request){
+                $all_users = $expert->expertUser()->get()->each(function($query) use($request){
                     if(!in_array($query->user_id, $request->users)){
                         $query->delete();
                     }

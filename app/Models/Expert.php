@@ -20,6 +20,10 @@ class Expert extends Authenticatable
     {
         return $this->belongsToMany(User::class, ExpertUser::class);
     }
+    public function expertUser()
+    {
+        return $this->hasMany(ExpertUser::class);
+    }
   
     
 }

@@ -70,10 +70,18 @@
                                 @foreach ($reports as $item)
                                     <tr>
                                         <td>{{ $item->id }}</td>
+                                        @if (auth()->guard("admin")->check())
                                         <td><a href="/admin/users/{{ $item->user->id }}/edit">{{ $item->user->name }}</a>
                                         </td>
                                         <td><a href="/admin/exams/{{ $item->exam->id }}/edit">{{ $item->exam->title }}</a>
                                         </td>
+                                        @else
+                                        <td>{{ $item->user->name }}
+                                        </td>
+                                        <td>{{ $item->exam->title }}
+                                        </td>
+                                        @endif
+                                       
                                         @php
                                             $correct = 0;
                                             $false = 0;

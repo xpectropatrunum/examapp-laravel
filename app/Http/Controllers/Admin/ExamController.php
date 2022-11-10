@@ -32,11 +32,13 @@ class ExamController extends Controller
         ];
         $request->validate($rules);
 
-        $exam->file()->delete();
+       
+      
         $exam->key()->delete();
 
 
         if($request->file('file')){
+            $exam->file()->delete();
             $extension = "pdf";
             $filenametostore = md5($exam->id . "drsho1") . '.' . $extension;
             $uploadedFile = $request->file('file');
@@ -44,7 +46,15 @@ class ExamController extends Controller
             $link = route("pdf", md5($exam->id . "drsho1"));
             $exam->file()->create(["url" =>  $link]);
         }
-       
+        if($request->file('answer_file')){
+            $exam->answer_file()->delete();
+            $extension = "pdf";
+            $filenametostore = md5($exam->id . "drsho1") . '-answer.' . $extension;
+            $uploadedFile = $request->file('answer_file');
+            $uploadedFile->move(public_path("exams/"), $filenametostore);
+            $link = route("pdf", md5($exam->id . "drsho1"). "-answer");
+            $exam->answer_file()->create(["url" =>  $link]);
+        }
         if (
 
             $exam->key()->create(["keys" => $request->keys])

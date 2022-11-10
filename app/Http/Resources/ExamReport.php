@@ -23,6 +23,7 @@ class ExamReport extends JsonResource
             "user" => UserResource::make($this->user),
             "exam" => ExamResource::make($this->exam),
             "result" => ExamResult::make($this->session),
+            "answer" => $this->exam->answer_file?->url,
         ];
     }
 }

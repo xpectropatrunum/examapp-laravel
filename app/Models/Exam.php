@@ -29,6 +29,10 @@ class Exam extends Model
     {
         return $this->hasOne(ExamFile::class);
     }
+    public function answer_file()
+    {
+        return $this->hasOne(ExamAnswerFile::class);
+    }
     public function sessions()
     {
         return $this->hasMany(ExamSession::class);

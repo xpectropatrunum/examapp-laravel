@@ -145,7 +145,7 @@
                                 @csrf
                                 <div class="row">
                                     <div class="form-group col-lg-12">
-                                        <label>upload pdf file</label>
+                                        <label>upload pdf file (question)</label>
                                         <input type="file" value="{{ old('file', $exam->file) }}" name="file"
                                             class="d-block @error('file') is-invalid @enderror" >
                                             @if ($exam->file)
@@ -153,7 +153,15 @@
                                                 
                                             @endif
                                     </div>
-
+                                    <div class="form-group col-lg-12">
+                                        <label>upload pdf file (answer)</label>
+                                        <input type="file" value="{{ old('answer_file', $exam->answer_file) }}" name="answer_file"
+                                            class="d-block @error('answer_file') is-invalid @enderror" >
+                                            @if ($exam->answer_file)
+                                            <a href="{{$exam->answer_file->url}}" target="_blank">See last uploaded file</a>
+                                                
+                                            @endif
+                                    </div>
 
                                     <h5 class="col-12 mt-5">Keys</h5>
                                     @for ($i = 0; $i < $exam->q_number; $i++)

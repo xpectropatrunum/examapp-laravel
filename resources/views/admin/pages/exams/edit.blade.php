@@ -165,7 +165,7 @@
 
                                     <h5 class="col-12 mt-5">Keys</h5>
                                     @for ($i = 0; $i < $exam->q_number; $i++)
-                                        <div class="form-group col-1">
+                                        <div class="form-group col-12 col-md-1">
                                             <label>{{$i+1}}</label>
                                             <input type="text" value="{{ old("keys.$i", $exam->key?->keys[$i]?? "") }}"
                                                 name="keys[]" class="form-control @error("keys.$i") is-invalid @enderror"

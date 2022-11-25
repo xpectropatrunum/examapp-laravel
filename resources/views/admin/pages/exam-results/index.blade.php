@@ -87,6 +87,9 @@
                                             $false = 0;
                                             $b_item = $item->session;
                                             $keys = $b_item->exam->key->keys;
+                                            foreach($keys as $key => $value){
+                                                $keys[$key] = MyHelper::convert($keys[$key]);
+                                            }
                                             $answers = $b_item->answers;
                                             foreach ($answers as $item_) {
                                                 if ($keys[$item_->q - 1] == $item_->a) {

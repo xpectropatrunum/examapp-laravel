@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\MyHelper;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -15,12 +16,14 @@ class ExamResult extends JsonResource
      */
     public function toArray($request)
     {
+     
         $correct = 0;
         $false = 0;
        
         $keys = $this->exam->key->keys;
         $answers = $this->answers;
         foreach($answers as $item){
+            $keys[$item->q -1] = MyHelper::convert($keys[$item->q -1]);
             if($keys[$item->q -1] ==  $item->a){
                 $correct += 1;
             }else{
@@ -34,7 +37,7 @@ class ExamResult extends JsonResource
             "c" => $correct,
             "f" => $false,
             "a" => $this->exam->q_number,
-            "p" => $percentage,
+            "p" => bcdiv($percentage, 4),
             "keys" =>  $keys
         ];
     }

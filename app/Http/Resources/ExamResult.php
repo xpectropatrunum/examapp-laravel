@@ -40,7 +40,7 @@ class ExamResult extends JsonResource
             "c" => $correct,
             "f" => $false,
             "a" => $this->exam->q_number,
-            "p" => bcdiv($percentage, 4),
+            "p" => $percentage,
             "keys" =>  $keys
         ];
     }

@@ -21,9 +21,12 @@ class ExamResult extends JsonResource
         $false = 0;
        
         $keys = $this->exam->key->keys;
+        foreach($keys as $key => $value){
+            $keys[$key] = MyHelper::convert($keys[$key]);
+        }
         $answers = $this->answers;
         foreach($answers as $item){
-            $keys[$item->q -1] = MyHelper::convert($keys[$item->q -1]);
+           
             if($keys[$item->q -1] ==  $item->a){
                 $correct += 1;
             }else{
